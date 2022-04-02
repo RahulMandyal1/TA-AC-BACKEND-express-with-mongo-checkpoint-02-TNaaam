@@ -21,9 +21,11 @@ router.post("/", (req, res, next) => {
         { $push: { eventcategory: category._id } },
         { new: true },
         (err, upadtedevent) => {
-          if (err) return next(err);
+          if(err) {
+            res.redirect('/events');
+          }
           console.log(upadtedevent);
-          res.render("index");
+          res.render("/events");
         }
       );
     });
@@ -97,7 +99,7 @@ router.post("/:id/", (req, res, next) => {
       { new: true },
       (err, updatedcategory) => {
         if (err) return next(err);
-        res.redirect("/events");
+        res.redirect("/events/");
       }
     );
   });
@@ -158,23 +160,6 @@ router.get("/:id/dislike", (req, res, next) => {
   });
 });
 
-// Adding the remarks
-router.post("/:id/remark", (req, res, next) => {
-  let id = req.params.id;
-  req.body.eventId = id;
-  Remarks.create(req.body, (err, remark) => {
-    Events.findByIdAndUpdate(
-      id,
-      { $push: { remarks: remark._id } },
-      { new: true },
-      (err, upadtedevent) => {
-        if (err) return next(err);
-        console.log(upadtedevent);
-        res.redirect(`/events/${id}`);
-      }
-    );
-  });
-});
 
 // Increment Remark like
 router.get("/:id/:event/like/", (req, res, next) => {
@@ -212,36 +197,7 @@ router.get("/:id/:event/dislike", (req, res, next) => {
   });
 });
 
-//get a form to edi the remark  made on a event
-// /events/remarks/<%=cv._id%>/edit
-router.get("/remarks/:id/edit", (req, res, next) => {
-  let id = req.params.id;
-  Remarks.findById(id, (err, remark) => {
-    if (err) return next(err);
-    res.render("editremarks", { remark: remark });
-  });
-});
 
-//edit the remark made on a specific events /events/remarks/:id
-router.post("/remarks/:id", (req, res, next) => {
-  let id = req.params.id;
-  Remarks.findByIdAndUpdate(
-    id,
-    { $set: { author: req.body.author, content: req.body.content } },
-    { new: true }
-  ).exec((err, updatedremark) => {
-    res.redirect(`/events/${updatedremark.eventId}`);
-  });
-});
-
-//delete the remark on a event
-router.get("/remarks/:id/delete", (req, res, next) => {
-  let id = req.params.id;
-  Remarks.findByIdAndDelete(id, (err, remark) => {
-    if (err) return next(err);
-    res.redirect(`/events/${remark.eventId}`);
-  });
-});
 
 //Request on the a specific category
 router.get("/:category_name/category", (req, res) => {

@@ -28,8 +28,8 @@
         <div class="events-card-container">
           <% events.forEach(cv=>{%>
           <div class="event-card">
+            <h2><%= cv.eventId.title%></h2>
             <div class="additional-information">
-              <h2><%= cv.eventId.title%></h2>
               <div class="even-location">
                 <p>Location : <span><%= cv.eventId.location%></span></p>
               </div>
