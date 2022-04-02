@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add a new event</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <header>
+      <a href="/" class="logo">Event.<span>.</span></a>
+      <nav>
+        <ul>
+          <li><a href="/" class="menu-btn">home</a></li>
+          <li><a href="/events" class="menu-btn">allEvents</a></li>
+          <li><a href="/events/new" class="menu-btn btn">new event</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <section class="event-form-container">
+        <div class="form-container">
+          <form action="/events/" method="POST">
+            <input
+              type="text"
+              name="title"
+              placeholder="Enter event  title here "
+            />
+            <input
+            type="text"
+            name="host"
+            placeholder="name of the host"
+          />
+            <textarea
+              name="summary"
+              cols="30"
+              rows="5"
+              placeholder="summary here .."
+            ></textarea>
+            <div class="form-row">
+              <input
+                type="date"
+                name="start_date"
+                placeholder="Enter a start date"
+              />
+              <input
+                type="date"
+                name="end_date"
+                placeholder="Enter a end date"
+              />
+            </div>
+            <div class="form-row">
+              <input type="text" name="event_category" placeholder="category" />
+              <input
+                type="text"
+                name="location"
+                placeholder="enter location of the event"
+              />
+            </div>
+            <div class="center">
+              <input type="submit" value="submit" class="btn" id="submit-btn" />
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
