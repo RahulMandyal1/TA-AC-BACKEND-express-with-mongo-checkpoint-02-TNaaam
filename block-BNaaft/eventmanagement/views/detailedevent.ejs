@@ -124,6 +124,16 @@
                </ul>
             </nav>
           </div>
+          <div class="datewidget">
+            <h4>Events on date : </h4>
+            <form action="/events/datedata"  method="POST">
+              <label for="startdate">start date </label>
+              <input type="date" name="startdate" id="startdate">
+              <label for="enddate">end date </label>
+              <input type="date" name="enddate" id="enddate">
+              <input type="submit" value="submit">
+            </form>
+          </div>
         </aside>
       </section>
     </main>

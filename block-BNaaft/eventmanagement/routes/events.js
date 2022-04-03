@@ -10,10 +10,43 @@ router.get("/new", (req, res) => {
   res.render("eventform");
 });
 
+router.post("/datedata", (req, res, next) => {
+  req.body.startdate = new Date(req.body.startdate);
+  req.body.enddate = new Date(req.body.enddate);
+  let startDate = req.body.startdate;
+  let endDate = req.body.enddate;
+  Events.find({
+    start_date: { $gte: startDate },
+    end_date: { $lt: endDate },
+  })
+    .populate("eventcategory")
+    .exec((err, events) => {
+      // render all  the distnict  categories and locations in the sidebar
+      if (err) {
+        return res.redirect("/events");
+      }
+      Category.find({}, (err, categories) => {
+        const distnictCategories = [...new Set(categories.map((c) => c.name))];
+        Events.find({}, (err, allevents) => {
+          const distnictLocations = [
+            ...new Set(allevents.map((e) => e.location)),
+          ];
+          console.log(distnictLocations);
+          res.render("allevents", {
+            events: events,
+            categories: distnictCategories,
+            locations: distnictLocations,
+          });
+        });
+      });
+    });
+});
+
 router.post("/", (req, res, next) => {
   let categoryData = {};
   categoryData.name = req.body["event_category"];
   Events.create(req.body, (err, event) => {
+    if(err) return res.redirect('/events/new');
     categoryData.eventId = event._id;
     Category.create(categoryData, (err, category) => {
       Events.findByIdAndUpdate(
@@ -21,11 +54,11 @@ router.post("/", (req, res, next) => {
         { $push: { eventcategory: category._id } },
         { new: true },
         (err, upadtedevent) => {
-          if(err) {
-            res.redirect('/events');
-          }
+          // if(err) {
+          //   res.redirect('/events');
+          // }
           console.log(upadtedevent);
-          res.render("/events");
+          res.redirect("/events");
         }
       );
     });
@@ -160,7 +193,6 @@ router.get("/:id/dislike", (req, res, next) => {
   });
 });
 
-
 // Increment Remark like
 router.get("/:id/:event/like/", (req, res, next) => {
   let id = req.params.id;
@@ -197,8 +229,6 @@ router.get("/:id/:event/dislike", (req, res, next) => {
   });
 });
 
-
-
 //Request on the a specific category
 router.get("/:category_name/category", (req, res) => {
   let categoryName = req.params.category_name;
@@ -223,7 +253,6 @@ router.get("/:category_name/category", (req, res) => {
 });
 
 // /events/<%= cv%>/location
-
 // render all the events based on a specific location
 router.get("/:location_name/location", (req, res) => {
   let locationName = req.params.location_name;
@@ -246,4 +275,5 @@ router.get("/:location_name/location", (req, res) => {
       });
     });
 });
+
 module.exports = router;
