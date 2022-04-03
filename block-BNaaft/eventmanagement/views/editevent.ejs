@@ -42,18 +42,26 @@
               value="<%=event.summary%>"
             ></textarea>
             <div class="form-row">
-              <input
-                type="date"
-                name="start_date"
-                placeholder="Enter a start date"
-                value="<%= event['start_date']%>"
-              />
-              <input
-                type="date"
-                name="end_date"
-                placeholder="Enter a end date"
-                value="<%= event['end_date']%>"
-              />
+              <div>
+                <label for="startdate">Event start date:</label>
+                <input
+                  type="date"
+                  name="start_date"
+                  placeholder="Enter a start date"
+                  value="<%= event['start_date']%>"
+                  id="startdate"
+                />
+              </div>
+              <div>
+                <label for="enddate">Event ending date:</label>
+                <input
+                  type="date"
+                  name="end_date"
+                  placeholder="Enter a end date"
+                  value="<%= event['end_date']%>"
+                  id="enddate"
+                />
+              </div>
             </div>
             <div class="form-row">
               <input

@@ -39,16 +39,24 @@
               placeholder="summary here .."
             ></textarea>
             <div class="form-row">
-              <input
-                type="date"
-                name="start_date"
-                placeholder="Enter a start date"
-              />
-              <input
-                type="date"
-                name="end_date"
-                placeholder="Enter a end date"
-              />
+              <div>
+                <label for="startdate">Event start date:</label>
+                <input
+                  type="date"
+                  name="start_date"
+                  placeholder="Enter a start date"
+                  id="startdate"
+                />
+              </div>
+              <div>
+                <label for="enddate">Event ending date:</label>
+                <input
+                  type="date"
+                  name="end_date"
+                  placeholder="Enter a end date"
+                  id="enddate"
+                />
+              </div>
             </div>
             <div class="form-row">
               <input type="text" name="event_category" placeholder="category" />

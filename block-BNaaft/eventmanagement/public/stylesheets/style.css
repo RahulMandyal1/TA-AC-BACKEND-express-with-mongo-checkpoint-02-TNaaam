@@ -289,3 +289,21 @@ textarea {
   padding: .8rem;
   margin: 1rem 0;
 }
+
+.datewidget form{
+  display: flex;
+  flex-direction:column;
+}
+.datewidget input{
+  padding: .5rem;
+  margin-bottom: 1rem;
+}
+
+.datewidget input:last-of-type{
+  background-color: #7400b8;
+   border: none;
+   color: #fff;
+   font-size: 1.5rem;
+   font-weight: 500;
+   margin: 1rem  0 0 0 ;
+}

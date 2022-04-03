@@ -37,7 +37,7 @@
                 <p>Hosted by : <span><%= event.host%></span></p>
               </div>
             </div>
-            <a href="events/<%= event._id%>" class="readmore">readmore</a>
+            <a href="/events/<%= event._id%>" class="readmore">readmore</a>
           </div>
           <%})%>
         </div>
@@ -61,6 +61,16 @@
                 <% })%>
               </ul>
             </nav>
+          </div>
+          <div class="datewidget">
+            <h4>Events on date : </h4>
+            <form action="/events/datedata"  method="POST">
+              <label for="startdate">start date </label>
+              <input type="date" name="startdate" id="startdate">
+              <label for="enddate">end date </label>
+              <input type="date" name="enddate" id="enddate">
+              <input type="submit" value="submit">
+            </form>
           </div>
         </aside>
       </section>
