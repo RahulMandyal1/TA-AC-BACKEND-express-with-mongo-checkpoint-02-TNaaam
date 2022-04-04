@@ -6,9 +6,9 @@ const Category = require("../models/category");
 const { events } = require("../models/events");
 const Remarks = require("../models/remarks");
 
-router.get("/new", (req, res) => {
-  res.render("eventform");
-});
+
+
+// Filter the data between the start date and end date as given by  the user  handle events/datedata route here 
 
 router.post("/datedata", (req, res, next) => {
   req.body.startdate = new Date(req.body.startdate);
@@ -42,6 +42,13 @@ router.post("/datedata", (req, res, next) => {
     });
 });
 
+
+// render a form once the user click on the new event button  
+router.get("/new", (req, res) => {
+  res.render("eventform");
+});
+
+//store the data in the database once the user submits a form
 router.post("/", (req, res, next) => {
   let categoryData = {};
   categoryData.name = req.body["event_category"];
@@ -112,7 +119,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
-// edit  the event detail again
+// get the form to edit  the event detail
 router.get("/:id/edit", (req, res) => {
   let id = req.params.id;
   Events.findById(id)
@@ -121,7 +128,7 @@ router.get("/:id/edit", (req, res) => {
       res.render("editevent", { event: event });
     });
 });
-//update the event detail on this route  - events/:id  post request on this one
+//update the event detail 
 router.post("/:id/", (req, res, next) => {
   let id = req.params.id;
   categoryName = req.body["event_category"];
@@ -143,7 +150,7 @@ router.get("/:id/delete", (req, res, next) => {
   let id = req.params.id;
   Events.findByIdAndDelete(id, { new: true }, (err, deletedEvent) => {
     Category.deleteOne(
-      { eventId: id },
+      { eventId: id },  
       { new: true },
       (err, deletedcategory) => {
         Remarks.deleteOne(
@@ -159,7 +166,7 @@ router.get("/:id/delete", (req, res, next) => {
   });
 });
 
-// Performing  the like and dislike functionality on the every event
+//Increses the like of every button once the increse like button is clicked
 router.get("/:id/like", (req, res, next) => {
   let id = req.params.id;
   Events.findByIdAndUpdate(
@@ -173,7 +180,7 @@ router.get("/:id/like", (req, res, next) => {
   );
 });
 
-//once dislike is  clicked then it will decrese on more like from the event
+//decrese  events like 
 router.get("/:id/dislike", (req, res, next) => {
   let id = req.params.id;
   Events.findById(id, (err, event) => {
@@ -193,43 +200,7 @@ router.get("/:id/dislike", (req, res, next) => {
   });
 });
 
-// Increment Remark like
-router.get("/:id/:event/like/", (req, res, next) => {
-  let id = req.params.id;
-  let eventid = req.params.event;
-  Remarks.findByIdAndUpdate(
-    id,
-    { $inc: { likes: 1 } },
-    { new: true },
-    (err, event) => {
-      if (err) return next(err);
-      res.redirect(`/events/${eventid}`);
-    }
-  );
-});
-
-//Decrement Remark like
-router.get("/:id/:event/dislike", (req, res, next) => {
-  let id = req.params.id;
-  let eventId = req.params.event;
-  Remarks.findById(id, (err, event) => {
-    if (event.likes > 0) {
-      Remarks.findByIdAndUpdate(
-        id,
-        { $inc: { likes: -1 } },
-        { new: true },
-        (err, event) => {
-          if (err) return next(err);
-          res.redirect(`/events/${eventId}`);
-        }
-      );
-    } else {
-      res.redirect(`/events/${eventId}`);
-    }
-  });
-});
-
-//Request on the a specific category
+//Get all the data of same category once the use click on that category
 router.get("/:category_name/category", (req, res) => {
   let categoryName = req.params.category_name;
   Category.find({ name: categoryName })
@@ -252,8 +223,8 @@ router.get("/:category_name/category", (req, res) => {
     });
 });
 
-// /events/<%= cv%>/location
-// render all the events based on a specific location
+//Filter the data from the database as per location provided by the user here we are 
+//getting  the data based on a particular location .
 router.get("/:location_name/location", (req, res) => {
   let locationName = req.params.location_name;
   Events.find({ location: locationName })
@@ -275,5 +246,6 @@ router.get("/:location_name/location", (req, res) => {
       });
     });
 });
+
 
 module.exports = router;
