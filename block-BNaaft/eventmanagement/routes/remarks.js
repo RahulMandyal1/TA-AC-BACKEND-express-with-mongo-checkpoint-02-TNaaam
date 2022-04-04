@@ -25,8 +25,7 @@ router.post("/:id/remark", (req, res, next) => {
     );
   });
 });
-//get a form to edi the remark  made on a event
-// /events/remarks/<%=cv._id%>/edit
+//render a form  to edit  the remarks detail
 router.get("/remarks/:id/edit", (req, res, next) => {
   let id = req.params.id;
   Remarks.findById(id, (err, remark) => {
@@ -35,7 +34,7 @@ router.get("/remarks/:id/edit", (req, res, next) => {
   });
 });
 
-//edit the remark made on a specific events /events/remarks/:id
+//edit the  remark of a event
 router.post("/remarks/:id", (req, res, next) => {
   let id = req.params.id;
   Remarks.findByIdAndUpdate(
@@ -57,6 +56,44 @@ router.get("/remarks/:id/delete", (req, res, next) => {
     res.redirect(`/events/${remark.eventId}`);
   });
 });
+
+
+// Increment Remarks like  we are getting  the remarks id form the url bar
+router.get("/:id/:event/like/", (req, res, next) => {
+  let id = req.params.id;
+  let eventid = req.params.event;
+  Remarks.findByIdAndUpdate(
+    id,
+    { $inc: { likes: 1 } },
+    { new: true },
+    (err, event) => {
+      if (err) return next(err);
+      res.redirect(`/events/${eventid}`);
+    }
+  );
+});
+
+//Decrement Remarks like we are getting the data form  url bar
+router.get("/:id/:event/dislike", (req, res, next) => {
+  let id = req.params.id;
+  let eventId = req.params.event;
+  Remarks.findById(id, (err, event) => {
+    if (event.likes > 0) {
+      Remarks.findByIdAndUpdate(
+        id,
+        { $inc: { likes: -1 } },
+        { new: true },
+        (err, event) => {
+          if (err) return next(err);
+          res.redirect(`/events/${eventId}`);
+        }
+      );
+    } else {
+      res.redirect(`/events/${eventId}`);
+    }
+  });
+});
+
 
 
 
