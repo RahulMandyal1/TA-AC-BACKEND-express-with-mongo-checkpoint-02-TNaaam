@@ -6,9 +6,9 @@ const Category = require("../models/category");
 const { events } = require("../models/events");
 const Remarks = require("../models/remarks");
 
+//most used  variable thourghout the project
 
-
-// Filter the data between the start date and end date as given by  the user  handle events/datedata route here 
+// Filter the data between the start date and end date as given by  the user  handle events/datedata route here
 
 router.post("/datedata", (req, res, next) => {
   req.body.startdate = new Date(req.body.startdate);
@@ -42,8 +42,7 @@ router.post("/datedata", (req, res, next) => {
     });
 });
 
-
-// render a form once the user click on the new event button  
+// render a form once the user click on the new event button
 router.get("/new", (req, res) => {
   res.render("eventform");
 });
@@ -53,7 +52,7 @@ router.post("/", (req, res, next) => {
   let categoryData = {};
   categoryData.name = req.body["event_category"];
   Events.create(req.body, (err, event) => {
-    if(err) return res.redirect('/events/new');
+    if (err) return res.redirect("/events/new");
     categoryData.eventId = event._id;
     Category.create(categoryData, (err, category) => {
       Events.findByIdAndUpdate(
@@ -72,180 +71,145 @@ router.post("/", (req, res, next) => {
   });
 });
 
-router.get("/", (req, res) => {
-  Events.find({})
-    .populate("eventcategory")
-    .exec((err, events) => {
-      // render all  the distnict  categories and locations in the sidebar
-      Category.find({}, (err, categories) => {
-        const distnictCategories = [...new Set(categories.map((c) => c.name))];
-        Events.find({}, (err, allevents) => {
-          const distnictLocations = [
-            ...new Set(allevents.map((e) => e.location)),
-          ];
-          console.log(distnictLocations);
-          res.render("allevents", {
-            events: events,
-            categories: distnictCategories,
-            locations: distnictLocations,
-          });
-        });
+router.get("/", async (req, res) => {
+  try {
+    const allevents = await Events.find({});
+    const categories = await Category.find({});
+    const distnictCategories = [...new Set(categories.map((c) => c.name))];
+    const distnictLocations = [...new Set(allevents.map((l) => l.location))];
+    // if the user wants  all the events based on some location
+    if (req.query.location) {
+      let locationName = req.query.location;
+      const events = await Events.find({ location: locationName }).populate(
+        "eventcategory"
+      );
+      res.render("locationEvents", {
+        events: events,
+        categories: distnictCategories,
+        locations: distnictLocations,
       });
+    }
+
+    // if the user  wants  all events based on  a category
+    if (req.query.category) {
+      let categoryName = req.query.category;
+      const events = await Category.find({ name: categoryName }).populate(
+        "eventId"
+      );
+      res.render("categoryEvents", {
+        events: events,
+        categories: distnictCategories,
+        locations: distnictLocations,
+      });
+    }
+    // if  no filter is applied then all the events are shown on the webpage
+    res.render("locationEvents", {
+      events: allevents,
+      categories: distnictCategories,
+      locations: distnictLocations,
     });
+  } catch (err) {
+    res.redirect("/events");
+  }
 });
 
 // Get a single  event detail
-router.get("/:id", (req, res) => {
-  let id = req.params.id;
-  Events.findById(id)
-    .populate("eventcategory")
-    .populate("remarks")
-    .exec((err, event) => {
-      // render all  the distnict  categories
-      Category.find({}, (err, categories) => {
-        const distnictCategories = [...new Set(categories.map((c) => c.name))];
-        Events.find({}, (err, allevents) => {
-          const distnictLocations = [
-            ...new Set(allevents.map((e) => e.location)),
-          ];
-          console.log(distnictLocations);
-          res.render("detailedevent", {
-            event: event,
-            categories: distnictCategories,
-            locations: distnictLocations,
-          });
-        });
-      });
+router.get("/:id", async (req, res) => {
+  try {
+    let id = req.params.id;
+
+    const allevents = await Events.find({});
+    const categories = await Category.find({});
+    const distnictCategories = [...new Set(categories.map((c) => c.name))];
+    const distnictLocations = [...new Set(allevents.map((l) => l.location))];
+
+    let event = await Events.findById(id).populate("eventcategory");
+    res.render("detailedevent", {
+      event: event,
+      categories: distnictCategories,
+      locations: distnictLocations,
     });
+  } catch (err) {
+    res.redirect("/events");
+  }
 });
 
 // get the form to edit  the event detail
-router.get("/:id/edit", (req, res) => {
-  let id = req.params.id;
-  Events.findById(id)
-    .populate("eventcategory")
-    .exec((err, event) => {
-      res.render("editevent", { event: event });
-    });
+router.get("/:id/edit", async (req, res) => {
+  try {
+    let id = req.params.id;
+    let event = await Events.findById(id).populate("eventcategory");
+    res.render("editevent", { event: event });
+  } catch (err) {
+    res.redirect("/events");
+  }
 });
-//update the event detail 
-router.post("/:id/", (req, res, next) => {
-  let id = req.params.id;
-  categoryName = req.body["event_category"];
-  Events.findByIdAndUpdate(id, req.body, { new: true }, (err, upadtedEvent) => {
-    Category.findByIdAndUpdate(
-      id,
+//update the event detail
+router.post("/:id/", async (req, res, next) => {
+  try {
+    let id = req.params.id;
+    let categoryName = req.body["event_category"];
+    let event = await Events.findByIdAndUpdate(id, req.body, { new: true });
+    // updating the category also
+    let category = await Category.findByIdAndUpdate(
+      { eventId: id },
       { name: categoryName },
-      { new: true },
-      (err, updatedcategory) => {
-        if (err) return next(err);
-        res.redirect("/events/");
-      }
+      { new: true }
     );
-  });
+    res.redirect("/events");
+  } catch (err) {
+    res.redirect("/events");
+  }
 });
 
 //delete  the event and delete its all the references
-router.get("/:id/delete", (req, res, next) => {
-  let id = req.params.id;
-  Events.findByIdAndDelete(id, { new: true }, (err, deletedEvent) => {
-    Category.deleteOne(
-      { eventId: id },  
-      { new: true },
-      (err, deletedcategory) => {
-        Remarks.deleteOne(
-          { eventId: id },
-          { new: true },
-          (err, deletedcategory) => {
-            if (err) return next(err);
-            res.redirect("/events");
-          }
-        );
-      }
+router.get("/:id/delete", async (req, res) => {
+  try {
+    let id = req.params.id;
+    let deleteEvent = await Events.findByIdAndDelete(id, { new: true });
+    let deleteCategory = await Category.deleteOne(
+      { eventId: id },
+      { new: true }
     );
-  });
+    let deleteRemarks = await Remarks.deleteOne({ eventId: id }, { new: true });
+    res.redirect("/events");
+  } catch (err) {
+    res.redirect("/events");
+  }
 });
 
 //Increses the like of every button once the increse like button is clicked
-router.get("/:id/like", (req, res, next) => {
-  let id = req.params.id;
-  Events.findByIdAndUpdate(
-    id,
-    { $inc: { likes: 1 } },
-    { new: true },
-    (err, event) => {
-      if (err) return next(err);
-      res.redirect(`/events/${id}`);
-    }
-  );
+router.get("/:id/like", async (req, res) => {
+  try {
+    let id = req.params.id;
+    let increseLikes = await Events.findByIdAndUpdate(
+      id,
+      { $inc: { likes: 1 } },
+      { new: true }
+    );
+    res.redirect("/events/" + id);
+  } catch (err) {
+    res.redirect("/events");
+  }
 });
 
-//decrese  events like 
-router.get("/:id/dislike", (req, res, next) => {
-  let id = req.params.id;
-  Events.findById(id, (err, event) => {
+//decrese  events like
+router.get("/:id/dislike", async (req, res) => {
+  try {
+    let id = req.params.id;
+    let event = await Events.findById(id);
     if (event.likes > 0) {
-      Events.findByIdAndUpdate(
+      let decreaseLikes = await Events.findByIdAndUpdate(
         id,
         { $inc: { likes: -1 } },
-        { new: true },
-        (err, event) => {
-          if (err) return next(err);
-          res.redirect(`/events/${id}`);
-        }
+        { new: true }
       );
-    } else {
-      res.redirect(`/events/${id}`);
+      res.redirect("/events/" + id);
     }
-  });
+    res.redirect("/events/" + id);
+  } catch (err) {
+    res.redirect("/events");
+  }
 });
-
-//Get all the data of same category once the use click on that category
-router.get("/:category_name/category", (req, res) => {
-  let categoryName = req.params.category_name;
-  Category.find({ name: categoryName })
-    .populate("eventId")
-    .exec((err, events) => {
-      Category.find({}, (err, categories) => {
-        const distnictCategories = [...new Set(categories.map((c) => c.name))];
-        Events.find({}, (err, allevents) => {
-          const distnictLocations = [
-            ...new Set(allevents.map((e) => e.location)),
-          ];
-          console.log(distnictLocations);
-          res.render("categoryEvents", {
-            events: events,
-            categories: distnictCategories,
-            locations: distnictLocations,
-          });
-        });
-      });
-    });
-});
-
-//Filter the data from the database as per location provided by the user here we are 
-//getting  the data based on a particular location .
-router.get("/:location_name/location", (req, res) => {
-  let locationName = req.params.location_name;
-  Events.find({ location: locationName })
-    .populate("eventcategory")
-    .exec((err, events) => {
-      Category.find({}, (err, categories) => {
-        const distnictCategories = [...new Set(categories.map((c) => c.name))];
-        Events.find({}, (err, allevents) => {
-          const distnictLocations = [
-            ...new Set(allevents.map((e) => e.location)),
-          ];
-          console.log(distnictLocations);
-          res.render("locationEvents", {
-            events: events,
-            categories: distnictCategories,
-            locations: distnictLocations,
-          });
-        });
-      });
-    });
-});
-
 
 module.exports = router;

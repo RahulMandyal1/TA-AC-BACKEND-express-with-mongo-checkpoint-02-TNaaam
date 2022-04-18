@@ -1,141 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Event management</title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-    <!-- font awesoem cdn link here ....  -->
-    <link
-      rel="stylesheet"
-      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
-      crossorigin="anonymous"
-    />
-  </head>
-  <body>
-    <header>
-      <a href="/" class="logo">Events<span>.</span></a>
-      <nav>
-        <ul>
-          <li><a href="/" class="menu-btn">home</a></li>
-          <li><a href="/events" class="menu-btn">allEvents</a></li>
-          <li><a href="/events/new" class="menu-btn btn">new event</a></li>
-        </ul>
-      </nav>
-    </header>
-    <main>
-      <section class="allevents-container">
-        <div class="events-card-container">
-          <article class="single-eventdetail">
-            <h2><%= event.title%></h2>
+<%- include('./partials/cdnlink.ejs')%>
+<!-- adding the header  -->
+<%- include('./partials/header.ejs')%>
+<main>
+  <section class="allevents-container">
+    <div class="events-card-container">
+      <article class="single-eventdetail">
+        <h2><%= event.title%></h2>
+        <div class="additional-information">
+          <p>Location : <span><%= event.location%></span></p>
+          <p>Hosted by : <span><%= event.host%></span></p>
+          <p>
+            Category:<% event.eventcategory.forEach(cv=>{%>
+            <span><%= cv.name%></span>
+            <% })%>
+          </p>
+          <div class="like-dislike-container">
+            <p>totalLikes:<span><%= event.likes%></span></p>
+            <a href="/events/<%=event._id%>/like"
+              ><i class="fas fa-thumbs-up"></i
+            ></a>
+            <a href="/events/<%=event._id%>/dislike"
+              ><i class="fas fa-thumbs-down"></i>
+            </a>
+          </div>
+        </div>
+        <div class="event-summary">
+          <p><%= event.summary%></p>
+        </div>
+        <div class="cta-container">
+          <a href="/events/<%=event._id%>/edit">edit</a>
+          <a href="/events/<%=event._id%>/delete">delete</a>
+        </div>
+      </article>
+
+      <div class="remarks-container">
+        <h3>Add remarks</h3>
+        <form
+          action="/events/<%=event._id%>/remark"
+          method="POST"
+          class="remark-form-container"
+        >
+          <input
+            type="text"
+            name="author"
+            placeholder="Enter your name here "
+          />
+          <textarea
+            name="content"
+            cols="30"
+            rows="6"
+            placeholder="enter  remark here "
+          ></textarea>
+          <input type="submit" value="submit" />
+        </form>
+
+        <div class="show-remarks">
+          <%event.remarks.forEach(cv=>{%>
+          <div class="remark-card">
+            <p><%=cv.content%></p>
             <div class="additional-information">
-              <p>Location : <span><%= event.location%></span></p>
-              <p>Hosted by : <span><%= event.host%></span></p>
-              <p>
-                Category:<% event.eventcategory.forEach(cv=>{%>
-                <span><%= cv.name%></span>
-                <% })%>
-              </p>
               <div class="like-dislike-container">
-                <p>totalLikes:<span><%= event.likes%></span></p>
-                <a href="/events/<%=event._id%>/like"
+                <p>totalLikes:<span><%= cv.likes%></span></p>
+                <a href="/events/<%= cv._id%>/<%=event._id%>/like"
                   ><i class="fas fa-thumbs-up"></i
                 ></a>
-                <a href="/events/<%=event._id%>/dislike"
+                <a href="/events/<%= cv._id%>/<%=event._id%>/dislike"
                   ><i class="fas fa-thumbs-down"></i>
                 </a>
               </div>
-            </div>
-            <div class="event-summary">
-              <p><%= event.summary%></p>
+              <p><%=cv.author%></p>
             </div>
             <div class="cta-container">
-              <a href="/events/<%=event._id%>/edit">edit</a>
-              <a href="/events/<%=event._id%>/delete">delete</a>
-            </div>
-          </article>
-
-          <div class="remarks-container">
-            <h3>Add remarks</h3>
-            <form
-              action="/events/<%=event._id%>/remark"
-              method="POST"
-              class="remark-form-container"
-            >
-              <input
-                type="text"
-                name="author"
-                placeholder="Enter your name here "
-              />
-              <textarea
-                name="content"
-                cols="30"
-                rows="6"
-                placeholder="enter  remark here "
-              ></textarea>
-              <input type="submit" value="submit" />
-            </form>
-
-            <div class="show-remarks">
-              <%event.remarks.forEach(cv=>{%>
-              <div class="remark-card">
-                <p><%=cv.content%></p>
-                <div class="additional-information">
-                  <div class="like-dislike-container">
-                    <p>totalLikes:<span><%= cv.likes%></span></p>
-                    <a href="/events/<%= cv._id%>/<%=event._id%>/like"
-                      ><i class="fas fa-thumbs-up"></i
-                    ></a>
-                    <a href="/events/<%= cv._id%>/<%=event._id%>/dislike"
-                      ><i class="fas fa-thumbs-down"></i>
-                    </a>
-                  </div>
-                  <p><%=cv.author%></p>
-                </div>
-                <div class="cta-container">
-                  <a href="/events/remarks/<%=cv._id%>/edit">edit</a>
-                  <a href="/events/remarks/<%=cv._id%>/delete">delete</a>
-                </div>
-              </div>
-              <%})%>
+              <a href="/events/remarks/<%=cv._id%>/edit">edit</a>
+              <a href="/events/remarks/<%=cv._id%>/delete">delete</a>
             </div>
           </div>
+          <%})%>
         </div>
-        <aside class="sidebar">
-          <div class="category-widget">
-            <nav>
-              <ul>
-                <h4>All categories</h4>
-                <% categories.forEach(cv=>{ %>
-                  <li><a href="/events/<%= cv%>/category"><%= cv%></a></li>
-                <% })%>
-               </ul>
-            </nav>
-          </div>
-          <div class="location-widget">
-            <nav>
-              <ul>
-                <h4>Events on locations</h4>
-                <% locations.forEach(cv=>{ %>
-                  <li><a href="/events/<%= cv%>/location"><%= cv%></a></li>
-                <% })%>
-               </ul>
-            </nav>
-          </div>
-          <div class="datewidget">
-            <h4>Events on date : </h4>
-            <form action="/events/datedata"  method="POST">
-              <label for="startdate">start date </label>
-              <input type="date" name="startdate" id="startdate">
-              <label for="enddate">end date </label>
-              <input type="date" name="enddate" id="enddate">
-              <input type="submit" value="submit">
-            </form>
-          </div>
-        </aside>
-      </section>
-    </main>
-  </body>
-</html>
+      </div>
+    </div>
+    <%- include('./partials/sidebar.ejs')%>
+    </section>
+</main>
