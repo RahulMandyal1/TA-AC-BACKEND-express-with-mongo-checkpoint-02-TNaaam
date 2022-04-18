@@ -1,0 +1,32 @@
+<aside class="sidebar">
+    <div class="category-widget">
+      <nav>
+        <ul>
+          <h4>All categories</h4>
+          <% categories.forEach(cv=>{ %>
+          <li><a href="/events?category=<%= cv%>"><%= cv%></a></li>
+          <% })%>
+        </ul>
+      </nav>
+    </div>
+    <div class="location-widget">
+      <nav>
+        <ul>
+          <h4>Events on locations</h4>
+          <% locations.forEach(cv=>{ %>
+          <li><a href="/events?location=<%= cv%>"><%= cv%></a></li>
+          <% })%>
+        </ul>
+      </nav>
+    </div>
+    <div class="datewidget">
+      <h4>Events on date : </h4>
+      <form action="/events/datedata"  method="POST">
+        <label for="startdate">start date </label>
+        <input type="date" name="startdate" id="startdate">
+        <label for="enddate">end date </label>
+        <input type="date" name="enddate" id="enddate">
+        <input type="submit" value="submit">
+      </form>
+    </div>
+  </aside>

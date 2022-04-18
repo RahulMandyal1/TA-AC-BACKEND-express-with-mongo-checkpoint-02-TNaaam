@@ -1,46 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Event management</title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-  </head>
-  <body>
-    <header>
-      <a href="/" class="logo">Events<span>.</span></a>
-      <nav>
-        <ul>
-          <li><a href="/" class="menu-btn">home</a></li>
-          <li><a href="/events" class="menu-btn">allEvents</a></li>
-          <li><a href="/events/new" class="menu-btn btn">new event</a></li>
-        </ul>
-      </nav>
-    </header>
-    <main>
-      <section class="center">
-        <form
-          action="/events/remarks/<%=remark._id%>"
-          method="POST"
-          class="remark-form-container"
-        >
-          <input
-            type="text"
-            name="author"
-            placeholder="Enter your name here "
-            value="<%=remark.author%>"
-          />
-          <textarea
-            name="content"
-            cols="30"
-            rows="10"
-            placeholder="enter  remark here "
-            value="<%=remark.content%>"
-          ></textarea>
-          <input type="submit" value="submit" />
-        </form>
-      </section>
-    </main>
-  </body>
-</html>
+<%- include('./partials/cdnlink.ejs')%> <%- include('./partials/header.ejs')%>
+<main>
+  <section class="center">
+    <form
+      action="/events/remarks/<%=remark._id%>"
+      method="POST"
+      class="remark-form-container"
+    >
+      <input
+        type="text"
+        name="author"
+        placeholder="Enter your name here "
+        value="<%=remark.author%>"
+      />
+      <textarea
+        name="content"
+        cols="30"
+        rows="10"
+        placeholder="enter  remark here "
+        value="<%=remark.content%>"
+      ></textarea>
+      <input type="submit" value="submit" />
+    </form>
+  </section>
+</main>

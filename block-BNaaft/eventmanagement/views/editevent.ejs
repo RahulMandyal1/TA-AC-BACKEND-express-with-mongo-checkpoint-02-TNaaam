@@ -1,23 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit the event form</title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-  </head>
-  <body>
-    <header>
-      <a href="/" class="logo">Event.<span>.</span></a>
-      <nav>
-        <ul>
-          <li><a href="/" class="menu-btn">home</a></li>
-          <li><a href="/events" class="menu-btn">allEvents</a></li>
-          <li><a href="/events/new" class="menu-btn btn">new event</a></li>
-        </ul>
-      </nav>
-    </header>
+<%- include('./partials/cdnlink.ejs')%>
+<%- include('./partials/header.ejs')%>
     <main>
       <section class="event-form-container">
         <div class="form-container">
@@ -39,8 +21,7 @@
               cols="30"
               rows="5"
               placeholder="summary here .."
-              value="<%=event.summary%>"
-            ></textarea>
+            ><%=event.summary%></textarea>
             <div class="form-row">
               <div>
                 <label for="startdate">Event start date:</label>
@@ -86,5 +67,3 @@
         </div>
       </section>
     </main>
-  </body>
-</html>
