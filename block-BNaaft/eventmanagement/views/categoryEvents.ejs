@@ -1,0 +1,21 @@
+<%- include('./partials/cdnlink.ejs')%> <%- include('./partials/header.ejs')%>
+<main>
+  <section class="allevents-container">
+    <div class="events-card-container">
+      <% events.forEach(cv=>{%>
+      <div class="event-card">
+        <h2><%= cv.eventId.title%></h2>
+        <div class="additional-information">
+          <div class="even-location">
+            <p>Location : <span><%= cv.eventId.location%></span></p>
+          </div>
+          <div class="event-hostname">
+            <p>Hosted by : <span><%= cv.eventId.host%></span></p>
+          </div>
+        </div>
+        <a href="/events/<%= cv.eventId._id%>" class="readmore">readmore</a>
+      </div>
+      <%})%>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,25 @@
+<%- include('./partials/cdnlink.ejs')%> <%- include('./partials/header.ejs')%>
+<main>
+  <section class="center">
+    <form
+      action="/events/remarks/<%=remark._id%>"
+      method="POST"
+      class="remark-form-container"
+    >
+      <input
+        type="text"
+        name="author"
+        placeholder="Enter your name here "
+        value="<%=remark.author%>"
+      />
+      <textarea
+        name="content"
+        cols="30"
+        rows="10"
+        placeholder="enter  remark here "
+        value="<%=remark.content%>"
+      ></textarea>
+      <input type="submit" value="submit" />
+    </form>
+  </section>
+</main>

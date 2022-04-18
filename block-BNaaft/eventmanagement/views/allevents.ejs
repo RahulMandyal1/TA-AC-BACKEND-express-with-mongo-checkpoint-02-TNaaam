@@ -1,0 +1,24 @@
+<!-- adding the cdn link  -->
+<%- include('./partials/cdnlink.ejs')%> <%- include('./partials/header.ejs')%>
+<main>
+  <section class="allevents-container">
+    <div class="events-card-container">
+      <% events.forEach(event=>{%>
+      <div class="event-card">
+        <h2><%= event.title%></h2>
+        <div class="additional-information">
+          <div class="even-location">
+            <p>Location : <span><%= event.location%></span></p>
+          </div>
+          <div class="event-hostname">
+            <p>Hosted by : <span><%= event.host%></span></p>
+          </div>
+        </div>
+        <a href="/events/<%= event._id%>" class="readmore">readmore</a>
+      </div>
+      <%})%>
+    </div>
+    <!-- adding  the  sidebar  -->
+    <%- include('./partials/sidebar.ejs')%>
+  </section>
+</main>

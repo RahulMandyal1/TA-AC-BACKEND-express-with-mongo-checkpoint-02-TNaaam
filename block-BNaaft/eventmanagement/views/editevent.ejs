@@ -1,0 +1,69 @@
+<%- include('./partials/cdnlink.ejs')%>
+<%- include('./partials/header.ejs')%>
+    <main>
+      <section class="event-form-container">
+        <div class="form-container">
+          <form action="/events/<%=event._id%>/%>" method="POST">
+            <input
+              type="text"
+              name="title"
+              placeholder="Enter event  title here "
+              value="<%= event.title%>"
+            />
+            <input
+              type="text"
+              name="host"
+              placeholder="name of the host"
+              value="<%= event.host%>"
+            />
+            <textarea
+              name="summary"
+              cols="30"
+              rows="5"
+              placeholder="summary here .."
+            ><%=event.summary%></textarea>
+            <div class="form-row">
+              <div>
+                <label for="startdate">Event start date:</label>
+                <input
+                  type="date"
+                  name="start_date"
+                  placeholder="Enter a start date"
+                  value="<%= event['start_date']%>"
+                  id="startdate"
+                />
+              </div>
+              <div>
+                <label for="enddate">Event ending date:</label>
+                <input
+                  type="date"
+                  name="end_date"
+                  placeholder="Enter a end date"
+                  value="<%= event['end_date']%>"
+                  id="enddate"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <input
+                type="text"
+                name="event_category"
+                placeholder="category"
+                value="<% event.eventcategory.forEach(cv=>{%>
+                <%=cv.name%>
+             <% })%>"
+              />
+              <input
+                type="text"
+                name="location"
+                placeholder="enter location of the event"
+                value="<%= event.location%>"
+              />
+            </div>
+            <div class="center">
+              <input type="submit" value="submit" class="btn" id="submit-btn" />
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
